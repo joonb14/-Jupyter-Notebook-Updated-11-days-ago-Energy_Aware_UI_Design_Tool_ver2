@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UI Power Usage Analyzation Tool</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div id="wrapper">
+  <header>
+    <div class="hd header-lleft"></div>
+    <div class="hd header-left">
+      <img src="{{ url_for('static', filename='low_battery.png') }}">
+    </div>
+    <div class="hd header-center">
+      <h1>UI Power Usage Analyzation Tool</h1>
+    </div>
+    <div class="hd header-right">
+      <img src="{{ url_for('static', filename='full_battery.png') }}">
+    </div>
+    <div class="hd header-rright"></div>
+  </header>
+  <br>
+  <div id="container">
+    <form id="up_form" action="/upload" method="post" enctype="multipart/form-data">
+      <div id="options">
+        <p>
+          Phone
+          <select id="phone" name="phone">
+            <option value="gn5movie">Galaxy Note 5</option>
+            <option value="pxldefault">Pixel XL default</option>
+            <option value="pxlpicture">Pixel XL picture</option>
+          </select>
+          | Merge Similar Colors <input id="mc" name="mc" type="checkbox">
+		  | Number of color groups(2 to 10) <input id="Kvalue" name="Kvalue" type="number" min="2" max="10">
+		  | Translate
+          <select id="translate" name="translate">
+            <option value="none">None</option>
+            <option value="rgborder">RGB Order</option>
+            <option value="greyscale">GreyScale</option>
+            <option value="inverted">Inverted + RGB Order</option>
+            <option value="achinvert">Achromatic Invert</option>
+            <option value="grecovery">GreyScale Recovery</option>
+          </select>
+        </p>
+      </div>
+      <div id="left">
+        <p>Original Image</p>
+        {% if filename %}
+          <img id="image" src="{{ url_for('send_file', filename=filename) }}">
+        {% else %}
+          <h1>no image</h1>
+        {% endif %}
+        <input type="hidden" name="hidden" value="{{ filename }}">
+        <input id="file_input" name="image" type="file">
+      </div>
+      <div id="right">
+        <div id="overall" class="blackbox">
+          {% if RGBP %}
+            <h3>Overall - Total Power Usage: {{ RGBP[3] }}mW</h3>
+            Average red: {{ RGBP[0] }}<br>
+            Average green: {{ RGBP[1] }}<br>
+            Average blue: {{ RGBP[2] }}<br>
+            <!--<div id="colorGraph">
+              {% for colorInfo in colorUsage %}
+                <div class='colorgraph_stick' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }});
+                width: {{ colorInfo[3] }}%;'></div>
+              {% endfor %}
+            </div>-->
+          {% else %}
+            <h3>Waiting for image</h3>
+          {% endif %}
+        </div>
+        <div id="choose_num"></div>
+        <div id="colors"></div>
+      </div>
+    </form>
+    <div id="after">
+      <p>Modified Image</p>
+      <div id="mimagediv">
+        {% if filename %}
+          <img id="mimage" src="uploads/translated_image.jpg">
+          <p>predicted power: {{ trInfo[0] }}mW </p>
+          <p>{{ trInfo[1] }}% reduced</p>
+        {% else %}
+          <h1>no image</h1>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript">
+  var colordiv_default =
+    "{% for colorInfo in colorUsage %} \
+    <div class='blackbox'> \
+      <h4>{{ colorInfo[0] + 1 }}) RGB: {{ colorInfo[4] }} ({{ colorInfo[5] }}%)</h4>\
+      <div class='colorusage_left'> \
+        <div class='colorusage_color' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }})';></div> \
+      </div> \
+      <div class='colorusage_right'> \
+        <p>Power Usage: {{ colorInfo[2][0] }}mW</p> \
+        <p>Power Usage Ratio: {{ colorInfo[3] }}%</p> \
+      </div> \
+    </div> \
+    {% endfor %}";
+  
+  var colordiv_merge =
+    "{% for colorInfo in simColorUsage %} \
+    <div class='blackbox'> \
+      <h4>{{ colorInfo[0] + 1 }}) RGB: \
+      {% for colors in colorInfo[4] %} \
+        {{ colors }}, \
+      {% endfor %} \
+      ({{ colorInfo[5] }}%)</h4>\
+      <div class='colorusage_left'> \
+        {% for colors in colorInfo[1] %} \
+        <div class='colorusage_color' style='background-color: rgb({{ colors[0] }}, {{ colors[1] }}, {{ colors[2] }})';></div> \
+        {% endfor %} \
+      </div> \
+      <div class='colorusage_right'> \
+        <p>Power Usage: {{ colorInfo[2][0] }}mW</p> \
+        <p>Power Usage Ratio: {{ colorInfo[3] }}%</p> \
+      </div> \
+    </div> \
+    {% endfor %}";
+
+  $('#up_form').submit(function(){
+      wrapWindowByMask();
+  });
+
+  {% if check %}
+    {% if check[0] %}
+      $('#phone').val('{{ check[0] }}').prop('selected', true);
+    {% endif %}
+
+    {% if check[1] %}
+      $('#translate').val('{{ check[1] }}').prop('selected', true);
+    {% endif %}
+
+    {% if check[5] %}
+      $('#mc').attr('checked', true);
+      $('#colors').html(colordiv_merge);
+    {% else %}
+      $('#colors').html(colordiv_default);
+    {% endif %}
+  {% else %}
+    $('#colors').html(colordiv_default);
+  {% endif %}
+
+  $('#options').on('change', function(){
+    if($('#mc').prop('checked'))
+      $('#colors').html(colordiv_merge);
+    else
+      $('#colors').html(colordiv_default);
+  });
+
+  {% if filename %}
+    $('#phone').on('change', function(){
+      $('#up_form').submit();
+    });
+    $('#translate').on('change', function(){
+      $('#up_form').submit();
+    });
+
+
+    if($('#mc').prop('checked'))
+    {
+      $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[4] }}'> of color list. (1 ~ {{ check[4] }})</div>");
+      if($('#list_num').val() > {{ check[4] }})
+        $('#list_num').val({{ check[4] }});
+    }
+    else
+    {
+      $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[3] }}'> of color list. (1 ~ {{ check[3] }})</div>");
+    }
+
+    $('#mc').on('load change', function(){
+      if($('#mc').prop('checked'))
+      {
+        $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[4] }}'> of color list. (1 ~ {{ check[4] }})</div>");
+        if($('#list_num').val() > {{ check[4] }})
+          $('#list_num').val({{ check[4] }});
+      }
+      else
+      {
+        $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[3] }}'> of color list. (1 ~ {{ check[3] }})</div>");
+      }
+    });
+  {% endif %}
+
+  $('#file_input').on('change', function(){
+    $('#list_num').val(10);
+    $('#up_form').submit();
+  });
+
+  function wrapWindowByMask() {
+    //화면의 높이와 너비를 구한다.
+    var maskHeight = $(document).height();
+    var maskWidth = window.document.body.clientWidth;
+
+    var mask = "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
+    var loadingImg = '';
+
+    loadingImg += "<div id='loadingImg' style='position:absolute; left:50%; top:40%; display:none; z-index:10000;'>";
+    loadingImg += "<img src='{{ url_for('static', filename='viewLoading.gif') }}'/>";
+    loadingImg += "</div>";
+
+    //화면에 레이어 추가
+    $('body').append(mask).append(loadingImg);
+
+    //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다.
+    $('#mask').css({
+     'width' : maskWidth,
+     'height': maskHeight,
+     'opacity' : '0.3'
+    });
+
+    //마스크 표시
+    $('#mask').show();
+
+    //로딩중 이미지 표시
+    $('#loadingImg').show();
+  }
+
+  function closeWindowByMask() {
+        $('#mask, #loadingImg').hide();
+        $('#mask, #loadingImg').remove();
+  }
+</script>
+</html>
