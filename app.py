@@ -246,7 +246,7 @@ def upload_file():
 
     list_max = len(sorted_color_list)
     simlist_max = len(similar_color_list)
-    check = [phone, translate, list_num, list_max, simlist_max, mc]
+    check = [phone, translate, list_num, list_max, simlist_max, mc, Kvalue]
 
     return render_template('index.html', check = check, filename = filename, RGBP = RGBP, colorUsage = colorUsage, simColorUsage = simColorUsage, trInfo = trInfo)
 

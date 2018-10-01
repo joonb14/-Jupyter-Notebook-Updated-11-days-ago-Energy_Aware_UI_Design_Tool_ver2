@@ -144,6 +144,11 @@
     {% else %}
       $('#colors').html(colordiv_default);
     {% endif %}
+
+    {% if check[6] %}
+      $('#Kvalue').val('{{ check[6] }}');
+    {% endif %}
+
   {% else %}
     $('#colors').html(colordiv_default);
   {% endif %}
