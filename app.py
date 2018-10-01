@@ -38,14 +38,11 @@ def upload_file():
         list_num = request.form['list_num']
     else:
         list_num = 10
-    if 'mc' in request.form:
-        mc = request.form['mc']
-    else:
-        mc = None
     if 'Kvalue' in request.form:
         Kvalue = int(request.form['Kvalue'])
     else:
         Kvalue = None
+    mc = None
     if 'image' in request.files:
         file = request.files['image']
         filename = secure_filename(file.filename)
@@ -60,29 +57,29 @@ def upload_file():
     """
     K - means on Image code
     """
-    if Kvalue is not None:
-        sample = io.imread(open_filename)
-        x,y,z = sample.shape
-        data = sample / 255.0 # use 0...1 scale
-        data = data.reshape(x * y, z)
-        #data.shape
+    sample = io.imread(open_filename)
+    x,y,z = sample.shape
+    data = sample / 255.0 # use 0...1 scale
+    data = data.reshape(x * y, z)
+    #data.shape
 
 
-        kmeans = MiniBatchKMeans(Kvalue)
-        kmeans.fit(data)
-        new_colors = kmeans.cluster_centers_[kmeans.predict(data)]
-        new_colors = kmeans.cluster_centers_[kmeans.predict(data)]
+    kmeans = MiniBatchKMeans(Kvalue)
+    kmeans.fit(data)
+    new_colors = kmeans.cluster_centers_[kmeans.predict(data)]
+    new_colors = kmeans.cluster_centers_[kmeans.predict(data)]
 
-        sample_recolored = new_colors.reshape(sample.shape)
+    sample_recolored = new_colors.reshape(sample.shape)
 
-        io.imsave(Kmeans_filename, sample_recolored)
+    io.imsave(Kmeans_filename, sample_recolored)
 
-        target_colors = new_colors * 255
-        target_colors = np.int32(target_colors)
+    target_colors = new_colors * 255
+    target_colors = np.int32(target_colors)
 
-        unique_rows, unique_counts = np.unique(target_colors, axis=0, return_counts=True)
-
-        Kmeans_im = Image.open(Kmeans_filename, 'r') # image that has lots of color
+    unique_rows, unique_counts = np.unique(target_colors, axis=0, return_counts=True)
+    df = pd.DataFrame(unique_rows,columns=['R','G','B'])
+    df.insert(loc=3,column="counts",value=unique_counts )
+    Kmeans_im = Image.open(Kmeans_filename, 'r') # image that has lots of color
 
 
     """
@@ -104,29 +101,21 @@ def upload_file():
 
     predicted_power = tr.PredictedPower(im, clf)
 
-    if Kvalue is None:
-        end = tr.toEnd(im)
-        end_pixels = tr.toEndPixels(im)
-    else:
-        end = tr.toEnd(Kmeans_im)
-        end_pixels = tr.toEndPixels(Kmeans_im)
+    end = tr.toEnd(Kmeans_im)
+    end_pixels = tr.toEndPixels(Kmeans_im)
 
     R, G, B = np.mean(end_pixels, axis=0)
 
     # pick n most used colors
-    color_dict = {}
-    for index, row in end.iterrows():
+    color_dict={}
+    for index,row in df.iterrows():
         index = str(row['R'])+','+str(row['G'])+','+str(row['B'])
-
-        if index in color_dict:
-            color_dict[index] = color_dict.get(index) + 1
-        else:
-            color_dict[index] = 1
+        color_dict[index]=row['counts']
 
     sorted_color_list = sorted(color_dict.items(), key=lambda x:x[1], reverse=True)
 
     colorUsage = []
-    for i in range(int(list_num)):
+    for i in range(min(len(color_dict),int(list_num))):
         most = sorted_color_list[i]
         most_rgb = list(map(int, most[0].split(',')))
         mR = most_rgb[0]

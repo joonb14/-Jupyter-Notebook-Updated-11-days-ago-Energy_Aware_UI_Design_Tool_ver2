@@ -32,8 +32,7 @@
             <option value="pxldefault">Pixel XL default</option>
             <option value="pxlpicture">Pixel XL picture</option>
           </select>
-          | Merge Similar Colors <input id="mc" name="mc" type="checkbox">
-		  | Number of color groups(2 to 10) <input id="Kvalue" name="Kvalue" type="number" min="2" max="10">
+		  | Number of color groups(2 to 10) <input id="Kvalue" name="Kvalue" type="number" min="2" max="10" value="5">
 		  | Translate
           <select id="translate" name="translate">
             <option value="none">None</option>
@@ -161,9 +160,12 @@
       $('#up_form').submit();
     });
     $('#translate').on('change', function(){
-      $('#up_form').submit();
+	  $('#up_form').submit();
     });
 
+    $('#Kvalue').on('change', function(){
+      $('#up_form').submit();
+    });
 
     if($('#mc').prop('checked'))
     {
