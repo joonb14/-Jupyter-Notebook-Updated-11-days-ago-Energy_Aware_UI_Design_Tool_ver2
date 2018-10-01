@@ -53,7 +53,25 @@
         {% endif %}
         <input type="hidden" name="hidden" value="{{ filename }}">
         <input id="file_input" name="image" type="file">
-      </div>
+
+		<p>Clustered Image</p>
+		<div id="mimagediv">
+		{% if filename %}
+		  <img id="mimage" src="uploads/translated_image.jpg">
+		  <p>predicted power: {{ trInfo[0] }}mW </p>
+		  <p>{{ trInfo[1] }}% reduced</p>
+		  <!--color palette-->
+		  <div id="palette" style="height: 300px; width: 100%">
+			<p>Color Palette</p>
+		{% for colorInfo in colorUsage %}
+			<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
+		{% endfor %}
+		  </div>
+		{% else %}
+		  <h1>no image</h1>
+		{% endif %}
+        </div>
+	  </div>
       <div id="right">
         <div id="overall" class="blackbox">
           {% if RGBP %}
@@ -62,10 +80,6 @@
             Average green: {{ RGBP[1] }}<br>
             Average blue: {{ RGBP[2] }}<br>
             <!--<div id="colorGraph">
-              {% for colorInfo in colorUsage %}
-                <div class='colorgraph_stick' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }});
-                width: {{ colorInfo[3] }}%;'></div>
-              {% endfor %}
             </div>-->
           {% else %}
             <h3>Waiting for image</h3>
@@ -82,7 +96,14 @@
           <img id="mimage" src="uploads/translated_image.jpg">
           <p>predicted power: {{ trInfo[0] }}mW </p>
           <p>{{ trInfo[1] }}% reduced</p>
-        {% else %}
+		  <!--color palette-->
+		  <div id="palette" style="height: 300px; width: 100%">
+			<p>Palette Suggestion</p>
+        {% for colorInfo in colorUsage %}
+			<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
+        {% endfor %}
+		  </div>
+		{% else %}
           <h1>no image</h1>
         {% endif %}
       </div>
@@ -104,27 +125,6 @@
       </div> \
     </div> \
     {% endfor %}";
-  
-  var colordiv_merge =
-    "{% for colorInfo in simColorUsage %} \
-    <div class='blackbox'> \
-      <h4>{{ colorInfo[0] + 1 }}) RGB: \
-      {% for colors in colorInfo[4] %} \
-        {{ colors }}, \
-      {% endfor %} \
-      ({{ colorInfo[5] }}%)</h4>\
-      <div class='colorusage_left'> \
-        {% for colors in colorInfo[1] %} \
-        <div class='colorusage_color' style='background-color: rgb({{ colors[0] }}, {{ colors[1] }}, {{ colors[2] }})';></div> \
-        {% endfor %} \
-      </div> \
-      <div class='colorusage_right'> \
-        <p>Power Usage: {{ colorInfo[2][0] }}mW</p> \
-        <p>Power Usage Ratio: {{ colorInfo[3] }}%</p> \
-      </div> \
-    </div> \
-    {% endfor %}";
-
   $('#up_form').submit(function(){
       wrapWindowByMask();
   });
@@ -145,7 +145,8 @@
       $('#colors').html(colordiv_default);
     {% endif %}
 
-    {% if check[6] %}
+    {% if check[6] %}	
+      $('#list_num').val('{{ check[6] }}');
       $('#Kvalue').val('{{ check[6] }}');
     {% endif %}
 
@@ -175,30 +176,14 @@
     if($('#mc').prop('checked'))
     {
       $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[4] }}'> of color list. (1 ~ {{ check[4] }})</div>");
-      if($('#list_num').val() > {{ check[4] }})
-        $('#list_num').val({{ check[4] }});
     }
     else
     {
       $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[3] }}'> of color list. (1 ~ {{ check[3] }})</div>");
     }
-
-    $('#mc').on('load change', function(){
-      if($('#mc').prop('checked'))
-      {
-        $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[4] }}'> of color list. (1 ~ {{ check[4] }})</div>");
-        if($('#list_num').val() > {{ check[4] }})
-          $('#list_num').val({{ check[4] }});
-      }
-      else
-      {
-        $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[3] }}'> of color list. (1 ~ {{ check[3] }})</div>");
-      }
-    });
   {% endif %}
 
   $('#file_input').on('change', function(){
-    $('#list_num').val(10);
     $('#up_form').submit();
   });
 

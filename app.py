@@ -34,15 +34,12 @@ def index():
 def upload_file():
     phone = request.form['phone']
     translate = request.form['translate']
-    if 'list_num' in request.form:
-        list_num = request.form['list_num']
-    else:
-        list_num = 10
     if 'Kvalue' in request.form:
         Kvalue = int(request.form['Kvalue'])
     else:
         Kvalue = None
     mc = None
+    list_num =  int(request.form['Kvalue'])
     if 'image' in request.files:
         file = request.files['image']
         filename = secure_filename(file.filename)
@@ -88,9 +85,6 @@ def upload_file():
     im = Image.open(open_filename, 'r') # image that has lots of color
     x, y = im.size
 
-    x_delta = 36
-    y_delta = 64
-
     # select appropriate model
     if phone == 'gn5movie':
         clf = joblib.load('model/power_svm_gn5_movie.pkl')
@@ -121,10 +115,10 @@ def upload_file():
         mR = most_rgb[0]
         mG = most_rgb[1]
         mB = most_rgb[2]
-        most_power = clf.predict([[mR/255, mG/255, mB/255]]) * most[1] / (x_delta * y_delta)
+        most_power = clf.predict([[mR/255, mG/255, mB/255]]) * most[1] / (x * y)
         most_ratio = (most_power / predicted_power * 100).round(ROUND_NUM)
         most_name = ("0x%0.2X" % mR) + ("0x%0.2X" % mG)[2:] + ("0x%0.2X" % mB)[2:]
-        most_per = toRound(sorted_color_list[i][1] / (x_delta * y_delta) * 100)
+        most_per = toRound(sorted_color_list[i][1] / (x * y) * 100)
 
         most_power = most_power.round(ROUND_NUM)
 
@@ -136,8 +130,6 @@ def upload_file():
     # create parameter Red Green Blue, then send R,G,B value
     RGBP = [toRound(R), toRound(G), toRound(B), toRound(predicted_power)]
 
-
-
     # find similar colors
 
     # similar_color_list = [[[similar colors], num], [], ... []]
@@ -145,65 +137,7 @@ def upload_file():
 
     similar_color_list = []
     similar_color_num = []
-
-    for index in color_dict:
-        r = int(index.split(',')[0])
-        g = int(index.split(',')[1])
-        b = int(index.split(',')[2])
-
-        similar = False
-        simIndex = 0
-        for mem in similar_color_list:
-            c = mem[3][0]
-            if abs(c[0] - r) + abs(c[1] - g) + abs(c[2] - b) < 10:
-                similar = True
-                break
-
-            simIndex += 1
-
-        if similar:
-            similar_color_list[simIndex][0].append([r, g, b])
-            similar_color_list[simIndex][1] += color_dict[index]
-            similar_color_list[simIndex][2].append(color_dict[index])
-
-            new = similar_color_list[simIndex][3][0]
-            new[0] = (new[0]*similar_color_num[simIndex]+r)/(similar_color_num[simIndex]+1)
-            new[1] = (new[1]*similar_color_num[simIndex]+g)/(similar_color_num[simIndex]+1)
-            new[2] = (new[2]*similar_color_num[simIndex]+b)/(similar_color_num[simIndex]+1)
-            similar_color_list[simIndex][3].append(new)
-            del similar_color_list[simIndex][3][0]
-            similar_color_num[simIndex] += 1
-
-
-        else:
-            similar_color_list.append([[[r, g, b]], color_dict[index], [color_dict[index]], [[r, g, b]]])
-            similar_color_num.append(1)
-
-    similar_color_list.sort(key=lambda x:x[1], reverse=True)
-
     simColorUsage = []
-    for i in range(min(int(list_num), len(similar_color_list))):
-        most = similar_color_list[i]
-
-        most_srgb = []
-        most_spower = 0
-        most_sname = []
-        most_sper = 0
-        for j in range(len(most[0])):
-            most_srgb.append(most[0][j])
-            mR = most[0][j][0]
-            mG = most[0][j][1]
-            mB = most[0][j][2]
-            most_spower += clf.predict([[mR/255, mG/255, mB/255]]) * most[2][j] / (x_delta * y_delta)
-            most_sname.append(("0x%0.2X" % mR) + ("0x%0.2X" % mG)[2:] + ("0x%0.2X" % mB)[2:])
-
-        most_sratio = most_spower / predicted_power * 100
-        most_spower = most_spower.round(ROUND_NUM)
-        most_sratio = most_sratio.round(ROUND_NUM)
-        most_sper = toRound(similar_color_list[i][1] / (x_delta * y_delta) * 100)
-
-        simColorUsage.append([i, most_srgb, most_spower, most_sratio, most_sname, most_sper])
-
     #colorUsage.sort(key=lambda x:x[2], reverse=True)
     #simColorUsage.sort(key=lambda x:x[2], reverse=True)
 
