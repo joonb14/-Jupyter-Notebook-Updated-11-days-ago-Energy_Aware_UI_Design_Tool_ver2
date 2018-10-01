@@ -49,7 +49,7 @@
         {% if filename %}
           <img id="image" src="{{ url_for('send_file', filename=filename) }}">
         {% else %}
-          <h1>no image</h1>
+		  <img id="image" src="static/No_Image_Available.jpg">
         {% endif %}
         <input type="hidden" name="hidden" value="{{ filename }}">
         <input id="file_input" name="image" type="file">
@@ -68,7 +68,7 @@
 		{% endfor %}
 		  </div>
 		{% else %}
-		  <h1>no image</h1>
+		  <img id="image" src="static/No_Image_Available.jpg">
 		{% endif %}
         </div>
 	  </div>
@@ -104,7 +104,7 @@
         {% endfor %}
 		  </div>
 		{% else %}
-          <h1>no image</h1>
+		  <img id="image" src="static/No_Image_Available.jpg">
         {% endif %}
       </div>
     </div>
