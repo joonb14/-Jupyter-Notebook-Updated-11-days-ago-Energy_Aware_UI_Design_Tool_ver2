@@ -117,7 +117,7 @@ def upload_file():
         mB = most_rgb[2]
         most_power = clf.predict([[mR/255, mG/255, mB/255]]) * most[1] / (x * y)
         most_ratio = (most_power / predicted_power * 100).round(ROUND_NUM)
-        most_name = ("0x%0.2X" % mR) + ("0x%0.2X" % mG)[2:] + ("0x%0.2X" % mB)[2:]
+        most_name = (("0x%0.2X" % mR)[2:] + ("0x%0.2X" % mG)[2:] + ("0x%0.2X" % mB)[2:]).lower()
         most_per = toRound(sorted_color_list[i][1] / (x * y) * 100)
 
         most_power = most_power.round(ROUND_NUM)

@@ -5,6 +5,7 @@
   <title>UI Power Usage Analyzation Tool</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="static/jscolor.js"></script>
 </head>
 <body>
 <div id="wrapper">
@@ -56,76 +57,85 @@
 
 		<p>Clustered Image</p>
 		<div id="mimagediv">
-		{% if filename %}
-		  <img id="mimage" src="uploads/translated_image.jpg">
-		  <p>predicted power: {{ trInfo[0] }}mW </p>
-		  <p>{{ trInfo[1] }}% reduced</p>
-		  <!--color palette-->
-		  <div id="palette" style="height: 300px; width: 100%">
-			<p>Color Palette</p>
-		{% for colorInfo in colorUsage %}
-			<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
-		{% endfor %}
-		  </div>
-		{% else %}
-		  <img id="image" src="static/No_Image_Available.jpg">
-		{% endif %}
-        </div>
+			{% if filename %}
+			<img id="mimage" src="uploads/translated_image.jpg">
+			<p>predicted power: {{ trInfo[0] }}mW </p>
+			<p>{{ trInfo[1] }}% reduced</p>
+			<!--color palette-->
+			<div id="palette" style="height: 300px; width: 100%">
+				<p>Color Palette</p>
+				{% for colorInfo in colorUsage %}
+				<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
+				{% endfor %}
+			</div>
+			{% else %}
+			<img id="image" src="static/No_Image_Available.jpg">
+			{% endif %}
+		</div>
 	  </div>
-      <div id="right">
-        <div id="overall" class="blackbox">
-          {% if RGBP %}
-            <h3>Overall - Total Power Usage: {{ RGBP[3] }}mW</h3>
-            Average red: {{ RGBP[0] }}<br>
-            Average green: {{ RGBP[1] }}<br>
-            Average blue: {{ RGBP[2] }}<br>
-            <!--<div id="colorGraph">
-            </div>-->
-          {% else %}
-            <h3>Waiting for image</h3>
-          {% endif %}
-        </div>
-        <div id="choose_num"></div>
-        <div id="colors"></div>
-      </div>
-    </form>
-    <div id="after">
-      <p>Modified Image</p>
-      <div id="mimagediv">
-        {% if filename %}
-          <img id="mimage" src="uploads/translated_image.jpg">
-          <p>predicted power: {{ trInfo[0] }}mW </p>
-          <p>{{ trInfo[1] }}% reduced</p>
-		  <!--color palette-->
-		  <div id="palette" style="height: 300px; width: 100%">
-			<p>Palette Suggestion</p>
-        {% for colorInfo in colorUsage %}
-			<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
-        {% endfor %}
+	  <div id="right">
+		  <div id="overall" class="blackbox">
+			  {% if RGBP %}
+			  <h3>Overall - Total Power Usage: {{ RGBP[3] }}mW</h3>
+			  Average red: {{ RGBP[0] }}<br>
+			  Average green: {{ RGBP[1] }}<br>
+			  Average blue: {{ RGBP[2] }}<br>
+			  <!--<div id="colorGraph">
+		 </div>-->
+		 {% else %}
+		 <h3>Waiting for image</h3>
+		 {% endif %}
 		  </div>
-		{% else %}
-		  <img id="image" src="static/No_Image_Available.jpg">
-        {% endif %}
-      </div>
-    </div>
+		 {% for colorInfo in colorUsage %} 
+			<div class='blackbox'> 
+			<h4>{{ colorInfo[0] + 1 }}) RGB: {{ colorInfo[4] }} ({{ colorInfo[5] }}%)</h4>
+				<div class='colorusage_left'> 
+					<button id="color_{{ colorInfo[0] + 1 }}" class="colorusage_color jscolor {valueElement:null}" ></button> 
+      			</div> 
+      			<div class='colorusage_right'> 
+        		<p>Power Usage: {{ colorInfo[2][0] }}mW</p> 
+        		<p>Power Usage Ratio: {{ colorInfo[3] }}%</p> 
+   		   		</div> 
+  			 </div> 
+  		  {% endfor %}
+	  </div>
+	</form>
+	<div id="after">
+		<p>Modified Image</p>
+		<div id="mimagediv">
+			{% if filename %}
+			<img id="mimage" src="uploads/translated_image.jpg">
+			<p>predicted power: {{ trInfo[0] }}mW </p>
+			<p>{{ trInfo[1] }}% reduced</p>
+			<!--color palette-->
+			<div id="palette" style="height: 300px; width: 100%">
+				<p>Palette Suggestion</p>
+				{% for colorInfo in colorUsage %}
+				<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
+				{% endfor %}
+			</div>
+			{% else %}
+			<img id="image" src="static/No_Image_Available.jpg">
+			{% endif %}
+		</div>
+	</div>
   </div>
 </div>
 </body>
 <script type="text/javascript">
-  var colordiv_default =
-    "{% for colorInfo in colorUsage %} \
-    <div class='blackbox'> \
-      <h4>{{ colorInfo[0] + 1 }}) RGB: {{ colorInfo[4] }} ({{ colorInfo[5] }}%)</h4>\
-      <div class='colorusage_left'> \
-        <div class='colorusage_color' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }})';></div> \
-      </div> \
-      <div class='colorusage_right'> \
-        <p>Power Usage: {{ colorInfo[2][0] }}mW</p> \
-        <p>Power Usage Ratio: {{ colorInfo[3] }}%</p> \
-      </div> \
-    </div> \
-    {% endfor %}";
-  $('#up_form').submit(function(){
+function setTextColor(picker,id) {
+	document.getElementById(id).style.backgroundDolor = picker.toRGBString()
+}
+
+$(document).ready(function() {
+	{% for colorInfo in colorUsage %}
+		$('#color_{{ colorInfo[0] + 1 }}').css("background-color","rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }})");
+	{% endfor %}
+
+});
+
+
+$('#up_form').submit(function(){
       wrapWindowByMask();
   });
 
@@ -138,28 +148,11 @@
       $('#translate').val('{{ check[1] }}').prop('selected', true);
     {% endif %}
 
-    {% if check[5] %}
-      $('#mc').attr('checked', true);
-      $('#colors').html(colordiv_merge);
-    {% else %}
-      $('#colors').html(colordiv_default);
-    {% endif %}
-
     {% if check[6] %}	
       $('#list_num').val('{{ check[6] }}');
       $('#Kvalue').val('{{ check[6] }}');
     {% endif %}
-
-  {% else %}
-    $('#colors').html(colordiv_default);
   {% endif %}
-
-  $('#options').on('change', function(){
-    if($('#mc').prop('checked'))
-      $('#colors').html(colordiv_merge);
-    else
-      $('#colors').html(colordiv_default);
-  });
 
   {% if filename %}
     $('#phone').on('change', function(){
@@ -173,14 +166,6 @@
       $('#up_form').submit();
     });
 
-    if($('#mc').prop('checked'))
-    {
-      $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[4] }}'> of color list. (1 ~ {{ check[4] }})</div>");
-    }
-    else
-    {
-      $('#choose_num').html("<div class='blackbox'>Show <input id='list_num' name='list_num' type='number' value='{{ check[2] }}' min='1' max='{{ check[3] }}'> of color list. (1 ~ {{ check[3] }})</div>");
-    }
   {% endif %}
 
   $('#file_input').on('change', function(){
