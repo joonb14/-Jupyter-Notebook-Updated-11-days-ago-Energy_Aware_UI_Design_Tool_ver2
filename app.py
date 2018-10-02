@@ -47,7 +47,17 @@ def upload_file():
         file.save(f)
     else:
         filename = request.form['hidden']
-
+    change_color_list=[]
+    colornum = 0
+    if 'colornum' in request.form:
+        colornum = int(request.form['colornum'])
+    #print(colornum)
+    for i in range(colornum):
+        print(request.form[str(i)])
+    """
+    while (request.form[str(index)]):
+        index+=1
+    """
     open_filename = 'uploads/' + filename
     Kmeans_filename = 'uploads/' + 'K_means.jpg'
 

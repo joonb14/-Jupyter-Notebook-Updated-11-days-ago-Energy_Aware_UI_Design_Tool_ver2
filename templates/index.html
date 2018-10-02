@@ -58,9 +58,7 @@
 		<p>Clustered Image</p>
 		<div id="mimagediv">
 			{% if filename %}
-			<img id="mimage" src="uploads/translated_image.jpg">
-			<p>predicted power: {{ trInfo[0] }}mW </p>
-			<p>{{ trInfo[1] }}% reduced</p>
+			<img id="kimage" src="uploads/K_means.jpg">
 			<!--color palette-->
 			<div id="palette" style="height: 300px; width: 100%">
 				<p>Color Palette</p>
@@ -69,7 +67,7 @@
 				{% endfor %}
 			</div>
 			{% else %}
-			<img id="image" src="static/No_Image_Available.jpg">
+			<img id="kimage" src="static/No_Image_Available.jpg">
 			{% endif %}
 		</div>
 	  </div>
@@ -83,21 +81,39 @@
 			  <!--<div id="colorGraph">
 		 </div>-->
 		 {% else %}
-		 <h3>Waiting for image</h3>
+		 <div style="text-align: center; vertical-align: middle">
+		 	<h2>waiting for image</h2>
+		 </div>
 		 {% endif %}
 		  </div>
+		 <script type="text/javascript"> var index=0; </script>
 		 {% for colorInfo in colorUsage %} 
 			<div class='blackbox'> 
 			<h4>{{ colorInfo[0] + 1 }}) RGB: {{ colorInfo[4] }} ({{ colorInfo[5] }}%)</h4>
 				<div class='colorusage_left'> 
-					<button id="color_{{ colorInfo[0] + 1 }}" class="colorusage_color jscolor {valueElement:null}" ></button> 
-      			</div> 
+					<button id="color_{{ colorInfo[0] + 1 }}" class="colorusage_color jscolor {valueElement:null}"></button> 
+					<input name="{{ colorInfo[0] }}" id="{{ colorInfo[0] }}" type='hidden'/>
+				</div> 
       			<div class='colorusage_right'> 
         		<p>Power Usage: {{ colorInfo[2][0] }}mW</p> 
         		<p>Power Usage Ratio: {{ colorInfo[3] }}%</p> 
    		   		</div> 
   			 </div> 
+			 <script type="text/javascript"> index++; </script>
   		  {% endfor %}
+		  	<input name="colornum" id="colornum" type="hidden" value="{{ index }}">
+			<script type="text/javascript"> 
+				document.getElementById('colornum').value = index; 
+				console.log(index); 
+			</script>
+		  {% if not colorUsage%}
+		  {% else %}
+		  	 <div class='blackbox'>
+			 	<button type="button" id="color_change" onclick="update_color()" style="width: 100%; height: 50px; margin: auto">
+					<h3>Color Change</h3>
+				</button>
+			 </div>
+		  {% endif %}
 	  </div>
 	</form>
 	<div id="after">
@@ -123,9 +139,18 @@
 </div>
 </body>
 <script type="text/javascript">
-function setTextColor(picker,id) {
-	document.getElementById(id).style.backgroundDolor = picker.toRGBString()
-}
+function update_color() {
+	//jscolor be used as a string
+	{% for colorInfo in colorUsage %}
+		var [Red, Green, Blue] = (document.getElementById('color_{{ colorInfo[0] + 1 }}').style.backgroundColor.split(', '));
+		Red = Red.split('rgb(')[1];
+		Blue = Blue.split(')')[0];
+		console.log("Red: ", Red , " Green: " , Green ," Blue: ", Blue);
+		var send_string = Red+','+Green+','+Blue;
+		document.getElementById('{{ colorInfo[0] }}').value = send_string; 
+	{% endfor %}
+    $('#up_form').submit();
+};
 
 $(document).ready(function() {
 	{% for colorInfo in colorUsage %}
