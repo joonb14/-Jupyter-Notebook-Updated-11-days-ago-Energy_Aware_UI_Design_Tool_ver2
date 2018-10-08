@@ -33,16 +33,7 @@
             <option value="pxldefault">Pixel XL default</option>
             <option value="pxlpicture">Pixel XL picture</option>
           </select>
-		  | Number of color groups(2 to 10) <input id="Kvalue" name="Kvalue" type="number" min="2" max="10" value="5">
-		  | Translate
-          <select id="translate" name="translate">
-            <option value="none">None</option>
-            <option value="rgborder">RGB Order</option>
-            <option value="greyscale">GreyScale</option>
-            <option value="inverted">Inverted + RGB Order</option>
-            <option value="achinvert">Achromatic Invert</option>
-            <option value="grecovery">GreyScale Recovery</option>
-          </select>
+		  | Number of color groups(5 to 15) <input id="Kvalue" name="Kvalue" type="number" min="5" max="15" value="5">
         </p>
       </div>
       <div id="left">
@@ -54,10 +45,11 @@
         {% endif %}
         <input type="hidden" name="hidden" value="{{ filename }}">
         <input id="file_input" name="image" type="file">
+        <input id="initialize" type="hidden" name="initialize" value="0">
 
-		<p>Clustered Image</p>
 		<div id="mimagediv">
-			{% if filename %}
+		{% if filename %}
+			<p>Clustered Image</p>
 			<img id="kimage" src="uploads/K_means.jpg">
 			<!--color palette-->
 			<div id="palette" style="height: 300px; width: 100%">
@@ -66,15 +58,13 @@
 				<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
 				{% endfor %}
 			</div>
-			{% else %}
-			<img id="kimage" src="static/No_Image_Available.jpg">
-			{% endif %}
+		{% endif %}
 		</div>
 	  </div>
 	  <div id="right">
 		  <div id="overall" class="blackbox">
 			  {% if RGBP %}
-			  <h3>Overall - Total Power Usage: {{ RGBP[3] }}mW</h3>
+			  <h3>Original Image - Total Power Usage: {{ RGBP[3] }}mW</h3>
 			  Average red: {{ RGBP[0] }}<br>
 			  Average green: {{ RGBP[1] }}<br>
 			  Average blue: {{ RGBP[2] }}<br>
@@ -87,26 +77,43 @@
 		 {% endif %}
 		  </div>
 		 <script type="text/javascript"> var index=0; </script>
-		 {% for colorInfo in colorUsage %} 
-			<div class='blackbox'> 
-			<h4>{{ colorInfo[0] + 1 }}) RGB: {{ colorInfo[4] }} ({{ colorInfo[5] }}%)</h4>
-				<div class='colorusage_left'> 
-					<button id="color_{{ colorInfo[0] + 1 }}" class="colorusage_color jscolor {valueElement:null}"></button> 
-					<input name="{{ colorInfo[0] }}" id="{{ colorInfo[0] }}" type='hidden'/>
-				</div> 
-      			<div class='colorusage_right'> 
-        		<p>Power Usage: {{ colorInfo[2][0] }}mW</p> 
-        		<p>Power Usage Ratio: {{ colorInfo[3] }}%</p> 
-   		   		</div> 
-  			 </div> 
-			 <script type="text/javascript"> index++; </script>
-  		  {% endfor %}
-		  	<input name="colornum" id="colornum" type="hidden" value="{{ index }}">
+		 {% if not changed_colorUsage %}
+			 {% for colorInfo in colorUsage %} 
+				<div class='blackbox'> 
+				<h4>{{ colorInfo[0] + 1 }}) RGB: {{ colorInfo[4] }} ({{ colorInfo[5] }}%)</h4>
+					<div class='colorusage_left'> 
+						<button id="color_{{ colorInfo[0] + 1 }}" class="colorusage_color jscolor {valueElement:null}"></button> 
+						<input name="{{ colorInfo[0] }}" id="{{ colorInfo[0] }}" type='hidden'/>
+					</div> 
+					<div class='colorusage_right'> 
+					<p>Power Usage: {{ colorInfo[2][0] }}mW</p> 
+					<p>Power Usage Ratio: {{ colorInfo[3] }}%</p> 
+					</div> 
+				 </div> 
+				 <script type="text/javascript"> index++; </script>
+			  {% endfor %}
+		  {% else %}
+		  	{% for colorInfo in changed_colorUsage %} 
+				<div class='blackbox'> 
+				<h4>{{ colorInfo[0] + 1 }}) RGB: {{ colorInfo[4] }} ({{ colorInfo[5] }}%)</h4>
+					<div class='colorusage_left'> 
+						<button id="color_{{ colorInfo[0] + 1 }}" class="colorusage_color jscolor {valueElement:null}"></button> 
+						<input name="{{ colorInfo[0] }}" id="{{ colorInfo[0] }}" type='hidden'/>
+					</div> 
+					<div class='colorusage_right'> 
+					<p>Power Usage: {{ colorInfo[2][0] }}mW</p> 
+					<p>Power Usage Ratio: {{ colorInfo[3] }}%</p> 
+					</div> 
+				 </div> 
+				 <script type="text/javascript"> index++; </script>
+			  {% endfor %}
+		  {% endif %}
+<input name="colornum" id="colornum" type="hidden" value="{{ index }}">
 			<script type="text/javascript"> 
 				document.getElementById('colornum').value = index; 
 				console.log(index); 
 			</script>
-		  {% if not colorUsage%}
+		  {% if not (colorUsage or changed_colorUsage) %}
 		  {% else %}
 		  	 <div class='blackbox'>
 			 	<button type="button" id="color_change" onclick="update_color()" style="width: 100%; height: 50px; margin: auto">
@@ -125,8 +132,8 @@
 			<p>{{ trInfo[1] }}% reduced</p>
 			<!--color palette-->
 			<div id="palette" style="height: 300px; width: 100%">
-				<p>Palette Suggestion</p>
-				{% for colorInfo in colorUsage %}
+				<p>Changed Palette</p>
+				{% for colorInfo in changed_colorUsage %}
 				<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
 				{% endfor %}
 			</div>
@@ -153,9 +160,29 @@ function update_color() {
 };
 
 $(document).ready(function() {
+  {% if not changed_colorUsage %}
 	{% for colorInfo in colorUsage %}
 		$('#color_{{ colorInfo[0] + 1 }}').css("background-color","rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }})");
+		var [Red, Green, Blue] = (document.getElementById('color_{{ colorInfo[0] + 1 }}').style.backgroundColor.split(', '));
+		Red = Red.split('rgb(')[1];
+		Blue = Blue.split(')')[0];
+		console.log("Red: ", Red , " Green: " , Green ," Blue: ", Blue);
+		var send_string = Red+','+Green+','+Blue;
+		document.getElementById('{{ colorInfo[0] }}').value = send_string; 
+
 	{% endfor %}
+  {% else %}
+	{% for colorInfo in changed_colorUsage %}
+		$('#color_{{ colorInfo[0] + 1 }}').css("background-color","rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }})");
+		var [Red, Green, Blue] = (document.getElementById('color_{{ colorInfo[0] + 1 }}').style.backgroundColor.split(', '));
+		Red = Red.split('rgb(')[1];
+		Blue = Blue.split(')')[0];
+		console.log("Red: ", Red , " Green: " , Green ," Blue: ", Blue);
+		var send_string = Red+','+Green+','+Blue;
+		document.getElementById('{{ colorInfo[0] }}').value = send_string; 
+
+	{% endfor %}
+  {% endif %}
 
 });
 
@@ -181,20 +208,20 @@ $('#up_form').submit(function(){
 
   {% if filename %}
     $('#phone').on('change', function(){
+      $('#initialize').val('1');
       $('#up_form').submit();
-    });
-    $('#translate').on('change', function(){
-	  $('#up_form').submit();
     });
 
     $('#Kvalue').on('change', function(){
+      $('#initialize').val('1');
       $('#up_form').submit();
     });
 
   {% endif %}
 
   $('#file_input').on('change', function(){
-    $('#up_form').submit();
+    $('#initialize').val('1');
+	$('#up_form').submit();
   });
 
   function wrapWindowByMask() {
