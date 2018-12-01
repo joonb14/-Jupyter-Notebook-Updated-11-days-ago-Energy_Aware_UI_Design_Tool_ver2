@@ -2,15 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>UI Power Usage Analyzation Tool</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="static/jscolor.js"></script>
+  <style type = "text/css">
+  footer {
+	width: 100vw;
+    clear: both;
+    font-size: 15px;
+    color: #8d8d8d;
+    letter-spacing: -1px;
+	top: 7px;   
+	text-align:center;
+	}
+  </style>
 </head>
+ <footer>
+	contact	|	Tel : 02)000-0000, 010)0000-0000	FAX : 000-000-0000	location : Korea, ...	email : abc@naver.com
+</footer>
+
 <body>
-<div id="wrapper">
+
+	<div id="wrapper">
   <header>
-    <div class="hd header-lleft"></div>
+   <div class="hd header-lleft"></div>
     <div class="hd header-left">
       <img src="{{ url_for('static', filename='low_battery.png') }}">
     </div>
