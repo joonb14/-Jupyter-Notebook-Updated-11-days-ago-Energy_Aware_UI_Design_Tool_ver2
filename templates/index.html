@@ -16,7 +16,11 @@
     letter-spacing: -1px;
 	top: 7px;   
 	text-align:center;
-	}
+  }  	
+  .help_btn{cursor:pointer;}
+  #help_div_0{display:none;}
+  #help_div_1{display:none;}
+  #help_div_2{display:none;}
   </style>
 </head>
  <footer>
@@ -57,8 +61,8 @@
         </p>
       </div>
       <div id="left">
-        <p>Original Image</p>
-        {% if filename %}
+        <p style="float:left">Original Image</p>
+		{% if filename %}
           <img id="image" src="{{ url_for('send_file', filename=filename) }}">
         {% else %}
 		  <img id="image" src="static/No_Image_Available.jpg">
@@ -69,11 +73,25 @@
 
 		<div id="mimagediv">
 		{% if filename %}
-			<p>Clustered Image</p>
+			<p style="float:left;">Clustered Image</p>
+			  <div style="position:relative;">
+		  		<img src="static/info.png" width="20" height="20" class="help_btn" style="float:left; padding-top:20px; padding-left:2px;">
+				<div id="help_div_0" style="float:left;background-color:rgb(0,0,0);margin-bottom:5px; border-radius:2px; padding: 2px;">
+			  	<p>This image is clustered image based on file You uploaded. This is constructed with number of K colors(K is value you chose above)</p>
+			  </div>
+ 			</div>
 			<img id="kimage" src="uploads/K_means.jpg">
 			<!--color palette-->
 			<div id="palette" style="height: 300px; width: 100%">
-				<p>Color Palette</p>
+				<div>
+				  <p style="text-align:left;">Color Palette</p>
+				  <div style="position:relative;">
+					<img src="static/info.png" width="20" height="20" class="help_btn" style="float:left;">
+					<div id="help_div_1" style="float:left;background-color:rgb(0,0,0);margin-bottom:5px; border-radius:2px; padding: 2px;">
+					<p>Shows what color is used(total K colors) and shows their percentage</p>
+				    </div>
+				  </div>
+				</div>
 				{% for colorInfo in colorUsage %}
 				<div class='color-row' style='background-color: rgb({{ colorInfo[1][0] }}, {{ colorInfo[1][1] }}, {{ colorInfo[1][2] }}); height: {{ colorInfo[5] }}%;'></div>
 				{% endfor %}
@@ -156,7 +174,14 @@
 	  </div>
 	</form>
 	<div id="after">
-		<p>Modified Image</p>
+		<p style="float:left;">Modified Image</p>
+		<div style="position:relative;">
+		  <img src="static/info.png" width="20" height="20" class="help_btn" style="float:left; padding-top:20px; padding-left:2px;">
+		  <div id="help_div_2" style="float:left;background-color:rgb(0,0,0);margin-bottom:5px; border-radius:2px; padding: 2px;">
+		  	<p>If you click the color change buttion it will change color based on that color list. Else you will get exact same output as Clustered Image</p>
+		  </div>
+ 		</div>
+
 		<div id="mimagediv">
 			{% if filename %}
 			<img id="mimage" src="uploads/translated_image.jpg">
@@ -218,10 +243,19 @@ $(document).ready(function() {
 
 });
 
+  $(".help_btn").each(function(index) {
+    $(this).mouseover(function() {
+      $("#help_div_" + index).css("display", "block");
+    });
+    $(this).mouseout(function() {
+      $("#help_div_" + index).css("display", "none");
+    });
+  });
+
 
 $('#up_form').submit(function(){
       wrapWindowByMask();
-  });
+});
 
   {% if check %}
     {% if check[0] %}
@@ -265,7 +299,7 @@ $('#up_form').submit(function(){
     var loadingImg = '';
 
     loadingImg += "<div id='loadingImg' style='position:absolute; left:50%; top:40%; display:none; z-index:10000;'>";
-    loadingImg += "<img src='{{ url_for('static', filename='viewLoading.gif') }}'/>";
+    loadingImg += "<img src='static/viewLoading.gif'/>";
     loadingImg += "</div>";
 
     //화면에 레이어 추가
