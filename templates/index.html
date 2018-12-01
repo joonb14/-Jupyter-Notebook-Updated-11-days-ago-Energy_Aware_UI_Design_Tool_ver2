@@ -38,6 +38,9 @@
       <img src="{{ url_for('static', filename='full_battery.png') }}">
     </div>
     <div class="hd header-rright"></div>
+	  <div style= "float:left; margin-left: 10px; padding-top:15px;">
+       <a href = "http://165.132.105.120:13000/"><img src="static/homebutton.png" width = "50px", height = "50px"></a>
+	  </div>
   </header>
   <br>
   <div id="container">
@@ -90,6 +93,18 @@
 		 {% else %}
 		 <div style="text-align: center; vertical-align: middle">
 		 	<h2>waiting for image</h2>
+			<div style="background-color: rgba(0,0,0,1); text-align:left;margin: 0px;padding: 10px;">
+			  <h4 style="text-align:center;"> How to use </h4>
+		      <p>
+			  1. Choose the type of device.<br>
+			  2. Choose the number of color groups. It should be in from 5 to 15.<br>
+			  3. Attach the image what you want to know UI power usage.<br>
+			  4. Then, you can know overall total power usage, the infomation of color groups.<br>
+			  You can change the color by clicking the color box. Click the 'Color Change' button.<br>
+			  5. Then you can get the modified image, changed palette and the results of them.<br>
+			  6. If you want to try another image, click the home button.<br>
+	          </p>
+  	        </div>
 		 </div>
 		 {% endif %}
 		  </div>
