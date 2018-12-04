@@ -46,7 +46,7 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 
 ## Overall Flow
 
-<img width="800" src="https://user-images.githubusercontent.com/30307587/49442495-052e8c00-f80d-11e8-806d-1a0e2024efa2.png">
+<img width="800" src="https://user-images.githubusercontent.com/30307587/49442644-79692f80-f80d-11e8-9f9f-bf159a2fc761.png">
 <hr/>
 
 <br/>
