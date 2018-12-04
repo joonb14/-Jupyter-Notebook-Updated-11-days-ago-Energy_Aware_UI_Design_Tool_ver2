@@ -45,7 +45,7 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 
 <br/>
 <img width="800" src="https://user-images.githubusercontent.com/30307587/45682644-d8f35f80-bb7b-11e8-80fb-3a296779e6b8.JPG">
-#####Since the dataset was not sufficient we added additional 866 solid color images
+##### Since the dataset was not sufficient we added additional 866 solid color images
 <img width="800" src="https://user-images.githubusercontent.com/30307587/49441522-1629ce00-f80a-11e8-82fb-f2ede34a66d9.png">
 <img width="800" src="https://user-images.githubusercontent.com/30307587/45682382-1b686c80-bb7b-11e8-9551-42cfbff5ad81.JPG">
 
