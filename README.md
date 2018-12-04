@@ -55,6 +55,8 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 
 <br/>
 
+<hr/>
+
 ## UI Design Tool on flask
 
 <br/>
@@ -62,10 +64,14 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 <img width="800" src="https://user-images.githubusercontent.com/30307587/45682626-c711bc80-bb7b-11e8-99b1-635eaea5d0c0.JPG">
 <img width="800" src="https://user-images.githubusercontent.com/30307587/45687009-7f456200-bb88-11e8-8bc2-591988086b34.JPG">
 
+<hr/>
+
 # UI Tool Screenshot
 
 <img width="800" src="https://user-images.githubusercontent.com/30307587/49442075-b7fdea80-f80b-11e8-9c17-e3b6a15c7b64.png">
 <img width="800" src="https://user-images.githubusercontent.com/30307587/49442029-96046800-f80b-11e8-9686-5abb4a69fcfc.png">
+
+<hr/>
 
 # Result
 mini-batch K means clustering always returns slight different result with the same image
