@@ -66,6 +66,7 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 
 <img width="800" src="https://user-images.githubusercontent.com/30307587/49442075-b7fdea80-f80b-11e8-9c17-e3b6a15c7b64.png">
 <img width="800" src="https://user-images.githubusercontent.com/30307587/49442029-96046800-f80b-11e8-9686-5abb4a69fcfc.png">
+
 # Result
 mini-batch K means clustering always returns slight different result with the same image
 So buffering original cluster is important when its time to change colors
