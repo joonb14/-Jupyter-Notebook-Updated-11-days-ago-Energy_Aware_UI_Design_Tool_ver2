@@ -41,7 +41,7 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 
 ##### Since the dataset was not sufficient we added additional 866 solid color images
 
-<img width="800" src="https://user-images.githubusercontent.com/30307587/49441522-1629ce00-f80a-11e8-82fb-f2ede34a66d9.png">
+<img width="800" src="https://user-images.githubusercontent.com/30307587/49442730-bc2b0780-f80d-11e8-90ae-7849463727db.png">
 <img width="800" src="https://user-images.githubusercontent.com/30307587/45682382-1b686c80-bb7b-11e8-9551-42cfbff5ad81.JPG">
 
 ## Overall Flow
