@@ -9,8 +9,8 @@ ver1 Tool development:<br/>
 
 ver2 Tool development:<br/>
   Joonbeom Park: joonb14@gmail.com 
-  Jaeyoon Kang: mint3759@naver.com 
-  Hakjun Lee: jjuni0525@naver.com 
+  Gyurin Hwang: gyurinida9@gmail.com 
+  Sunho Lee:  
 
 This tool is designed for UI designers and App developers. <br/>
 Who are not considering about Power Usage of Mobile device. <br/>
