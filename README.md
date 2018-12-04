@@ -54,9 +54,6 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 <hr/>
 
 <br/>
-
-<hr/>
-
 ## UI Design Tool on flask
 
 <br/>
