@@ -57,6 +57,7 @@ PowerUsageofPixelXL_SVM_modeling: https://github.com/joonb14/PowerUsageofPixelXL
 
 <img width="800" src="https://user-images.githubusercontent.com/30307587/45682626-c711bc80-bb7b-11e8-99b1-635eaea5d0c0.JPG">
 <img width="800" src="https://user-images.githubusercontent.com/30307587/45687009-7f456200-bb88-11e8-8bc2-591988086b34.JPG">
+<img width="800" src="https://user-images.githubusercontent.com/30307587/49443285-65bec880-f80f-11e8-8978-a4c395714dfa.png>
 
 <hr/>
 
