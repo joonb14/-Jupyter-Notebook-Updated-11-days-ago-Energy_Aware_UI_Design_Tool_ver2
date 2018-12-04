@@ -2,7 +2,7 @@
 
 ver2 Tool development:<br/>
   Joonbeom Park: joonb14@gmail.com 
-  Gyurin Hwang: gyurinida9@gmail.com 
+  Gyurin Hwang: gyurinida@gmail.com 
   Sunho Lee: myshlee417@naver.com 
 
 This tool is designed for UI designers and App developers. <br/>
