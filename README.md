@@ -1,16 +1,9 @@
 # Energy Aware UI Design Tool ver2
 
-Director & Leader: cyh0967@gmail.com <br/>
-
-ver1 Tool development:<br/>
-  Joonbeom Park: joonb14@gmail.com 
-  Jaeyoon Kang: mint3759@naver.com 
-  Hakjun Lee: jjuni0525@naver.com 
-
 ver2 Tool development:<br/>
   Joonbeom Park: joonb14@gmail.com 
   Gyurin Hwang: gyurinida9@gmail.com 
-  Sunho Lee:  
+  Sunho Lee: myshlee417@naver.com 
 
 This tool is designed for UI designers and App developers. <br/>
 Who are not considering about Power Usage of Mobile device. <br/>
