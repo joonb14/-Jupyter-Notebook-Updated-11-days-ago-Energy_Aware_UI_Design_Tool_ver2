@@ -1,5 +1,11 @@
 # Energy Aware UI Design Tool ver2
 
+check out application at: http://165.132.105.120:13000/
+<br/>
+only for Desktop not for mobile <br/>
+not perfect yet<br/>
+<br/>
+
 ver2 Tool development:<br/>
   Joonbeom Park: joonb14@gmail.com 
   Gyurin Hwang: gyurinida@gmail.com 
